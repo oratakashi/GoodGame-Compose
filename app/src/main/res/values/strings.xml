@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">GoodGame</string>
+    <string name="label_home">Home</string>
+    <string name="label_favorite">Favorite</string>
+    <string name="label_see_all">Lihat Semua</string>
+    <string name="label_explore">Explore</string>
+</resources>
