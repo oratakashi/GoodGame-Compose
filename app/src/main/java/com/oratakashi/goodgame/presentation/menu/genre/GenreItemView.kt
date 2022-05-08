@@ -57,7 +57,7 @@ fun GenreItemView(
 
             Text(
                 text = data.name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .constrainAs(tvTitle) {

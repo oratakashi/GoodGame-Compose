@@ -71,7 +71,7 @@ fun GamesItemView(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface.copy(0.6f))
+                .background(MaterialTheme.colorScheme.surface.copy(0.9f))
                 .padding(5.dp)
                 .constrainAs(tvTitle) {
                     bottom.linkTo(parent.bottom)

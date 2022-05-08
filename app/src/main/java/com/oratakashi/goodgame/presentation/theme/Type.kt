@@ -77,8 +77,8 @@ val AppTypography = Typography(
     titleSmall = TextStyle(
         fontFamily = SFPro,
         fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 20.sp,
+        fontSize = 14.sp,
+        lineHeight = 18.sp,
         letterSpacing = 0.1.sp,
     ),
     labelLarge = TextStyle(
