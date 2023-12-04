@@ -22,7 +22,7 @@ fun <T : Any> MultiStateView(
 ) {
     Crossfade(
         targetState = state.collectAsState().value,
-        modifier = modifier
+        modifier = modifier, label = ""
     ) {
         when (val states = it) {
             is State.Default -> Box {

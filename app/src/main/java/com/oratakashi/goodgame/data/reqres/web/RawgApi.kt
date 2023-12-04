@@ -4,9 +4,8 @@ import com.oratakashi.goodgame.data.reqres.model.ResponseData
 import com.oratakashi.goodgame.data.reqres.model.games.GamesItem
 import com.oratakashi.goodgame.data.reqres.model.genre.GenreItem
 import com.oratakashi.goodgame.data.reqres.model.platforms.PlatformsItem
-import javax.inject.Inject
 
-class RawgApi @Inject constructor(
+class RawgApi constructor(
     private val api: RawgApiClient
 ): RawgApiClient {
     override suspend fun getGenres(

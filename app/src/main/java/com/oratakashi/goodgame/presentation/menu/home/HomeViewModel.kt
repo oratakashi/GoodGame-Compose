@@ -5,24 +5,26 @@ import androidx.lifecycle.viewModelScope
 import com.oratakashi.goodgame.domain.PlatformUsecase
 import com.oratakashi.goodgame.domain.model.platforms.Platforms
 import com.oratakashi.viewbinding.core.tools.State
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val platform: PlatformUsecase
 ) : ViewModel() {
     private val _platforms: MutableStateFlow<State<List<Platforms>>> by lazy {
         MutableStateFlow(State.default())
     }
     val platforms: StateFlow<State<List<Platforms>>> = _platforms
-    
+
     private fun getPlatform() {
         platform.getPlatform()
             .onStart { _platforms.emit(State.loading()) }
             .onEach {
-                if(it.isNotEmpty()) {
+                if (it.isNotEmpty()) {
                     _platforms.emit(State.success(it))
                 } else {
                     _platforms.emit(State.empty())
@@ -31,7 +33,7 @@ class HomeViewModel @Inject constructor(
             .catch { _platforms.emit(State.fail(it, it.message)) }
             .launchIn(viewModelScope)
     }
-    
+
     init {
         getPlatform()
     }

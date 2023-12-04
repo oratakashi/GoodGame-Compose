@@ -7,9 +7,8 @@ import com.oratakashi.goodgame.domain.model.games.Games
 import com.oratakashi.goodgame.domain.model.genre.Genre
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class GenreInteractor @Inject constructor(
+class GenreInteractor(
     private val repo: GenreRepository
 ): GenreUsecase {
     override fun getGenre(): Flow<List<Genre>> {

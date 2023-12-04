@@ -1,25 +1,36 @@
 package com.oratakashi.goodgame.presentation.menu.home
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -30,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.oratakashi.goodgame.R
@@ -40,9 +50,9 @@ import com.oratakashi.goodgame.presentation.menu.destinations.GenreViewDestinati
 import com.oratakashi.goodgame.presentation.navigation.MainNavGraph
 import com.oratakashi.goodgame.presentation.theme.GoodGameTheme
 import com.oratakashi.goodgame.presentation.theme.SFPro
-import com.oratakashi.goodgame.utilty.gridItems
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigateTo
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @MainNavGraph(start = true)
@@ -50,9 +60,10 @@ import com.ramcosta.composedestinations.navigation.navigateTo
 @Composable
 fun HomeView(
     navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = koinViewModel()
 ) {
-    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
+//    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior() }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -150,7 +161,7 @@ fun HomeView(
                         .padding(horizontal = 16.dp)
                         .padding(top = 7.5.dp)
                 )
-                
+
                 MultiStateView(
                     modifier = Modifier
                         .padding(top = 7.5.dp),
@@ -192,7 +203,7 @@ fun HomeView(
                                 platforms = data[position]
                             )
                         }
-                        item { 
+                        item {
                             PlatformSeeAllView(navController = navController)
                         }
                     }

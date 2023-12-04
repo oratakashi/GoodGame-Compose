@@ -1,60 +1,54 @@
 package com.oratakashi.goodgame.di
 
-import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.oratakashi.goodgame.BuildConfig
 import com.oratakashi.goodgame.Config
+import com.oratakashi.goodgame.data.reqres.GenreDataStore
+import com.oratakashi.goodgame.data.reqres.GenreRepository
+import com.oratakashi.goodgame.data.reqres.PlatformDataStore
+import com.oratakashi.goodgame.data.reqres.PlatformRepository
 import com.oratakashi.goodgame.data.reqres.web.RawgApi
 import com.oratakashi.goodgame.data.reqres.web.RawgApiClient
+import com.oratakashi.goodgame.domain.GenreInteractor
+import com.oratakashi.goodgame.domain.GenreUsecase
+import com.oratakashi.goodgame.domain.PlatformUsecase
+import com.oratakashi.goodgame.domain.PlatfromInteractor
+import com.oratakashi.goodgame.presentation.menu.genre.GenreViewModel
+import com.oratakashi.goodgame.presentation.menu.home.HomeViewModel
 import com.oratakashi.viewbinding.core.tools.retrofit.createOkHttpClient
 import com.oratakashi.viewbinding.core.tools.retrofit.createService
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
-import okhttp3.OkHttpClient
 import okhttp3.Request
-import javax.inject.Singleton
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-class ApiModule {
-    @Provides
-    @Singleton
-    fun providesChuckerCollector(
-        @ApplicationContext context: Context
-    ): ChuckerCollector {
-        return ChuckerCollector(
-            context = context,
+val apiModules = module {
+    single {
+        ChuckerCollector(
+            context = androidContext(),
             showNotification = BuildConfig.DEBUG,
             retentionPeriod = RetentionManager.Period.ONE_DAY
         )
     }
 
-    @Provides
-    @Singleton
-    fun providesChuckerInterceptor(
-        @ApplicationContext context: Context,
-        collector: ChuckerCollector
-    ): ChuckerInterceptor {
-        return ChuckerInterceptor.Builder(context)
+    single {
+        ChuckerInterceptor.Builder(androidContext())
             .apply {
-                collector(collector)
+                collector(get())
                 maxContentLength(250_000L)
                 alwaysReadResponseBody(false)
             }
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun providesCustomInterceptor(): Interceptor {
-        return Interceptor { chain ->
+    single {
+        Interceptor { chain ->
             var request: Request = chain.request()
 
             val url: HttpUrl = request.url.newBuilder()
@@ -71,16 +65,11 @@ class ApiModule {
         }
     }
 
-    @Provides
-    @Singleton
-    fun providesOkHttp(
-        interceptor: Interceptor,
-        chuckerInterceptor: ChuckerInterceptor
-    ): OkHttpClient {
-        return createOkHttpClient(
+    single {
+        createOkHttpClient(
             arrayOf(
-                interceptor,
-                chuckerInterceptor
+                get(),
+                get<ChuckerInterceptor>()
             ),
             null,
             null,
@@ -88,23 +77,26 @@ class ApiModule {
         )
     }
 
-    @Provides
-    @Singleton
-    fun providesServices(
-        okHttpClient: OkHttpClient
-    ): RawgApiClient {
-        return createService(
+    single {
+        createService(
             RawgApiClient::class.java,
-            okHttpClient,
+            get(),
             Config.BASE_URL
         )
     }
+}
 
-    @Provides
-    @Singleton
-    fun providesApiClient(
-        rawgApiClient: RawgApiClient
-    ): RawgApi {
-        return RawgApi(rawgApiClient)
-    }
+val reqresModule = module {
+    single { RawgApi(get()) }
+
+    singleOf(::GenreDataStore) bind GenreRepository::class
+
+    singleOf(::GenreInteractor) bind GenreUsecase::class
+
+    singleOf(::PlatformDataStore) bind PlatformRepository::class
+
+    singleOf(::PlatfromInteractor) bind PlatformUsecase::class
+
+    viewModelOf(::GenreViewModel)
+    viewModelOf(::HomeViewModel)
 }

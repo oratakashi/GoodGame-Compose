@@ -9,13 +9,18 @@ import com.oratakashi.goodgame.domain.GenreUsecase
 import com.oratakashi.goodgame.domain.model.games.Games
 import com.oratakashi.goodgame.domain.model.genre.Genre
 import com.oratakashi.viewbinding.core.tools.State
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlin.random.Random
 
-@HiltViewModel
-class GenreViewModel @Inject constructor(
+
+class GenreViewModel(
     private val genre: GenreUsecase
 ) : ViewModel() {
 
@@ -64,7 +69,7 @@ class GenreViewModel @Inject constructor(
         genre.getGenre()
             .onStart { _genre.emit(State.loading()) }
             .onEach {
-                if(it.isNotEmpty()) {
+                if (it.isNotEmpty()) {
                     _genre.emit(State.success(it))
                 } else {
                     _genre.emit(State.empty())
