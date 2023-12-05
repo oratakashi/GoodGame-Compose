@@ -23,12 +23,15 @@ import com.oratakashi.goodgame.R
 import com.oratakashi.goodgame.component.LottieView
 import com.oratakashi.goodgame.component.MultiStateView
 import com.oratakashi.goodgame.presentation.navigation.MainNavGraph
+import com.oratakashi.goodgame.presentation.transition.SlideTransition
 import com.ramcosta.composedestinations.annotation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @MainNavGraph
-@Destination
+@Destination(
+    style = SlideTransition::class
+)
 @Composable
 fun GenreView(
     navController: NavController,
@@ -91,17 +94,8 @@ fun GenreView(
                     LazyColumn {
                         items(data) {
                             GenreItemView(data = it, navController = navController)
-
                         }
                     }
-//                    Column(
-//                        modifier = Modifier
-//                            .verticalScroll(rememberScrollState())
-//                    ) {
-//                        repeat(data.size) { position ->
-//                            GenreItemView(data = data[position], navController = navController)
-//                        }
-//                    }
                 }
             )
         }

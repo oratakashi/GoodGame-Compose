@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -31,7 +32,10 @@ fun <T : Any> MultiStateView(
             is State.Success    -> Box {
                 content.invoke(this, states.data)
             }
-            is State.Empty   -> Box {
+            is State.Empty   -> Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
                 emptyLayout?.invoke(this)
             }
             is State.Loading -> Box(
@@ -40,7 +44,10 @@ fun <T : Any> MultiStateView(
             ) {
                 loadingLayout?.invoke(this)
             }
-            is State.Failure -> Box {
+            is State.Failure -> Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
                 errorLayout?.invoke(this, states.throwable, states.message)
             }
         }

@@ -1,5 +1,6 @@
 package com.oratakashi.goodgame.presentation.menu.home
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,12 +29,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -51,7 +54,7 @@ import com.oratakashi.goodgame.presentation.navigation.MainNavGraph
 import com.oratakashi.goodgame.presentation.theme.GoodGameTheme
 import com.oratakashi.goodgame.presentation.theme.SFPro
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.navigateTo
+import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,6 +95,13 @@ fun HomeView(
                         Icon(
                             imageVector = Icons.Outlined.Search,
                             contentDescription = "Search"
+                        )
+                    }
+
+                    IconButton(onClick = { /* doSomething() */ }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = "Person"
                         )
                     }
                 },
@@ -142,7 +152,7 @@ fun HomeView(
                             .weight(1f)
                             .padding(start = 7.5.dp, end = 2.5.dp)
                             .clickable {
-                                navController.navigateTo(GenreViewDestination)
+                                navController.navigate(GenreViewDestination)
                             }
                     )
                     ExploreItemView(
