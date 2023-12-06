@@ -4,4 +4,8 @@
     <string name="label_favorite">Favorite</string>
     <string name="label_see_all">Lihat Semua</string>
     <string name="label_explore">Explore</string>
+    <string name="label_new_release">New Release</string>
+    <string name="label_top_rating">Top Rating</string>
+    <string name="label_genre">Genre</string>
+    <string name="label_publisher">Publisher</string>
 </resources>

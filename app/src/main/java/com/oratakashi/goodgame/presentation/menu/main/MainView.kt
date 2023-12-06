@@ -1,27 +1,20 @@
 package com.oratakashi.goodgame.presentation.menu.main
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOut
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -35,11 +28,10 @@ import com.oratakashi.goodgame.presentation.menu.NavGraphs
 import com.oratakashi.goodgame.presentation.menu.appDestination
 import com.oratakashi.goodgame.presentation.menu.destinations.Destination
 import com.oratakashi.goodgame.presentation.menu.destinations.FavoriteViewDestination
-import com.oratakashi.goodgame.presentation.menu.destinations.HomeViewDestination
+import com.oratakashi.goodgame.presentation.menu.destinations.HomeScreenDestination
 import com.oratakashi.goodgame.presentation.theme.GoodGameTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.navigate
-import com.ramcosta.composedestinations.rememberNavHostEngine
 
 @Composable
 fun MainView() {
@@ -50,7 +42,7 @@ fun MainView() {
                 navController,
                 NavigationItem(
                     stringResource(R.string.label_home),
-                    HomeViewDestination,
+                    HomeScreenDestination,
                     Icons.Outlined.Home
                 ),
                 NavigationItem(
@@ -63,7 +55,7 @@ fun MainView() {
     ) {
         DestinationsNavHost(
             navController = navController,
-            navGraph = NavGraphs.root,
+            navGraph = NavGraphs.main,
             modifier = Modifier.padding(it)
         )
     }
@@ -78,7 +70,7 @@ fun BottomNavBar(
         .value?.appDestination()
 
     AnimatedVisibility(
-        visible = (selectedItem == HomeViewDestination || selectedItem == FavoriteViewDestination),
+        visible = (selectedItem == HomeScreenDestination || selectedItem == FavoriteViewDestination),
         enter = slideInVertically(
             initialOffsetY = { 300 },
             animationSpec = tween(
@@ -104,14 +96,16 @@ fun BottomNavBar(
                     selected = selectedItem == item.destination,
                     onClick = {
                         if (index == 0) {
-                            navController.navigate(HomeViewDestination, fun NavOptionsBuilder.() {
+                            navController.navigate(HomeScreenDestination, fun NavOptionsBuilder.() {
                                 launchSingleTop = true
-                                popUpTo(HomeViewDestination.route)
+                                popUpTo(HomeScreenDestination.route)
                             })
                         } else {
-                            navController.navigate(FavoriteViewDestination, fun NavOptionsBuilder.() {
-                                launchSingleTop = true
-                            })
+                            navController.navigate(
+                                FavoriteViewDestination,
+                                fun NavOptionsBuilder.() {
+                                    launchSingleTop = true
+                                })
                         }
                     }
                 )

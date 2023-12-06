@@ -7,7 +7,7 @@ import com.oratakashi.goodgame.data.reqres.model.platforms.PlatformsItem
 
 class RawgApi constructor(
     private val api: RawgApiClient
-): RawgApiClient {
+) : RawgApiClient {
     override suspend fun getGenres(
         ordering: String
     ): ResponseData<List<GenreItem>> {
@@ -24,5 +24,14 @@ class RawgApi constructor(
 
     override suspend fun getPlatforms(page: Int, pageSize: Int): ResponseData<List<PlatformsItem>> {
         return api.getPlatforms(page)
+    }
+
+    override suspend fun getGamesRelevance(
+        ordering: String,
+        date: String,
+        page: Int,
+        pageSize: Int
+    ): ResponseData<List<GamesItem>> {
+        return api.getGamesRelevance()
     }
 }

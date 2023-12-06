@@ -1,8 +1,5 @@
 package com.oratakashi.goodgame.presentation.menu.home
 
-import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,11 +10,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,25 +25,24 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.oratakashi.goodgame.R
-import com.oratakashi.goodgame.component.LottieView
-import com.oratakashi.goodgame.component.MultiStateView
-import com.oratakashi.goodgame.presentation.menu.destinations.GenreViewDestination
+import com.oratakashi.goodgame.domain.model.games.Games
+import com.oratakashi.goodgame.domain.model.menu.Exploration
+import com.oratakashi.goodgame.presentation.component.CarouselLoadingView
+import com.oratakashi.goodgame.presentation.component.CarouselView
+import com.oratakashi.goodgame.presentation.component.ExploreView
+import com.oratakashi.goodgame.presentation.component.LottieView
+import com.oratakashi.goodgame.presentation.component.MultiStateView
+import com.oratakashi.goodgame.presentation.menu.destinations.GenreScreenDestination
 import com.oratakashi.goodgame.presentation.navigation.MainNavGraph
 import com.oratakashi.goodgame.presentation.theme.GoodGameTheme
 import com.oratakashi.goodgame.presentation.theme.SFPro
@@ -61,7 +54,7 @@ import org.koin.androidx.compose.koinViewModel
 @MainNavGraph(start = true)
 @Destination
 @Composable
-fun HomeView(
+fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = koinViewModel()
 ) {
@@ -98,12 +91,6 @@ fun HomeView(
                         )
                     }
 
-                    IconButton(onClick = { /* doSomething() */ }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Person,
-                            contentDescription = "Person"
-                        )
-                    }
                 },
                 scrollBehavior = scrollBehavior
             )
@@ -115,6 +102,60 @@ fun HomeView(
                     .wrapContentSize(align = Alignment.TopStart)
                     .verticalScroll(rememberScrollState())
             ) {
+                MultiStateView(
+                    state = viewModel.banner,
+                    loadingLayout = {
+                        CarouselLoadingView()
+                    },
+                    emptyLayout = {
+                        LottieView(
+                            modifier = Modifier
+                                .width(150.dp)
+                                .height(150.dp)
+                                .align(Alignment.Center),
+                            animation = R.raw.empty
+                        )
+                    },
+                    errorLayout = { _, _ ->
+                        LottieView(
+                            modifier = Modifier
+                                .width(150.dp)
+                                .height(150.dp)
+                                .align(Alignment.Center),
+                            animation = R.raw.error
+                        )
+                    }
+                ) {
+                    CarouselView(
+                        data = it,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = 16.dp,
+                            )
+                    )
+                }
+                val data = listOf(
+                    Games(
+                        "https://media.rawg.io/media/screenshots/6e1/6e13d9acb4e7a6e184f24892f52c4544.jpg",
+                        "The Witcher 2",
+                        1,
+                        "2016-08-30"
+                    ),
+                    Games(
+                        "https://media.rawg.io/media/screenshots/6e1/6e13d9acb4e7a6e184f24892f52c4544.jpg",
+                        "The Witcher 3",
+                        2,
+                        "2016-08-30"
+                    ),
+                    Games(
+                        "https://media.rawg.io/media/screenshots/6e1/6e13d9acb4e7a6e184f24892f52c4544.jpg",
+                        "The Witcher 4",
+                        3,
+                        "2016-08-30"
+                    )
+                )
+//                CarouselLoadingView()
                 Text(
                     text = stringResource(R.string.label_explore),
                     style = MaterialTheme.typography.titleMedium,
@@ -124,43 +165,27 @@ fun HomeView(
                         .padding(top = 16.dp)
                 )
 
-                Row(
+                ExploreView(
                     modifier = Modifier
-                        .padding(top = 7.5.dp)
+                        .fillMaxWidth()
                 ) {
-                    ExploreItemView(
-                        data = painterResource(id = R.drawable.ic_new) to "New Release",
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 7.5.dp, end = 2.5.dp)
-                    )
-                    ExploreItemView(
-                        data = painterResource(id = R.drawable.ic_top) to "Top Rating",
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 2.5.dp, end = 7.5.dp)
-                    )
-                }
+                    when (it) {
+                        Exploration.NewRelease -> {
 
-                Row(
-                    modifier = Modifier
-                        .padding(top = 2.5.dp)
-                ) {
-                    ExploreItemView(
-                        data = painterResource(id = R.drawable.ic_genre) to "Genre",
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 7.5.dp, end = 2.5.dp)
-                            .clickable {
-                                navController.navigate(GenreViewDestination)
-                            }
-                    )
-                    ExploreItemView(
-                        data = painterResource(id = R.drawable.ic_platform) to "Publisher",
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 2.5.dp, end = 7.5.dp)
-                    )
+                        }
+
+                        Exploration.TopRating -> {
+
+                        }
+
+                        Exploration.Genre -> {
+                            navController.navigate(GenreScreenDestination)
+                        }
+
+                        Exploration.Publisher -> {
+
+                        }
+                    }
                 }
 
                 Text(
@@ -209,12 +234,11 @@ fun HomeView(
                     ) {
                         items(data.size) { position ->
                             PlatformView(
-                                navController = navController,
                                 platforms = data[position]
                             )
                         }
                         item {
-                            PlatformSeeAllView(navController = navController)
+                            PlatformSeeAllView()
                         }
                     }
                 }
@@ -223,64 +247,12 @@ fun HomeView(
     )
 }
 
-@Composable
-fun ExploreItemView(
-    data: Pair<Painter, String>,
-    modifier: Modifier = Modifier
-) {
-    ConstraintLayout(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(7.5.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(16.dp)
-    ) {
-        val (ivIcon, tvTitle) = createRefs()
-        Icon(
-            painter = data.first,
-            contentDescription = data.second,
-            modifier = Modifier
-                .constrainAs(ivIcon) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    bottom.linkTo(parent.bottom)
-                    width = Dimension.wrapContent
-                    height = Dimension.wrapContent
-                }
-        )
-
-        Text(
-            text = data.second,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .constrainAs(tvTitle) {
-                    top.linkTo(parent.top)
-                    start.linkTo(ivIcon.end)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-
-                    width = Dimension.fillToConstraints
-                    height = Dimension.wrapContent
-                }
-        )
-    }
-}
-
-@Preview
-@Composable
-fun PreviewExploreItemView() {
-    ExploreItemView(
-        data = painterResource(id = R.drawable.ic_top) to "Favorite"
-    )
-}
 
 @Preview
 @Composable
 fun PreviewHomeView() {
     GoodGameTheme {
         val navController = rememberNavController()
-        HomeView(navController)
+        HomeScreen(navController)
     }
 }

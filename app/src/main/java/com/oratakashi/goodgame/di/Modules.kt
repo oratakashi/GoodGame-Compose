@@ -5,12 +5,16 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.oratakashi.goodgame.BuildConfig
 import com.oratakashi.goodgame.Config
+import com.oratakashi.goodgame.data.reqres.GamesDataStore
+import com.oratakashi.goodgame.data.reqres.GamesRepository
 import com.oratakashi.goodgame.data.reqres.GenreDataStore
 import com.oratakashi.goodgame.data.reqres.GenreRepository
 import com.oratakashi.goodgame.data.reqres.PlatformDataStore
 import com.oratakashi.goodgame.data.reqres.PlatformRepository
 import com.oratakashi.goodgame.data.reqres.web.RawgApi
 import com.oratakashi.goodgame.data.reqres.web.RawgApiClient
+import com.oratakashi.goodgame.domain.GamesInteractor
+import com.oratakashi.goodgame.domain.GamesUsecase
 import com.oratakashi.goodgame.domain.GenreInteractor
 import com.oratakashi.goodgame.domain.GenreUsecase
 import com.oratakashi.goodgame.domain.PlatformUsecase
@@ -55,7 +59,7 @@ val apiModules = module {
                 .addQueryParameter("key", Config.KEY)
                 .build()
 
-            if(!request.url.queryParameterNames.contains("platforms")) {
+            if (!request.url.queryParameterNames.contains("platforms")) {
                 url.newBuilder()
                     .addQueryParameter("platforms", "4")
                     .build()
@@ -90,12 +94,13 @@ val reqresModule = module {
     single { RawgApi(get()) }
 
     singleOf(::GenreDataStore) bind GenreRepository::class
-
     singleOf(::GenreInteractor) bind GenreUsecase::class
 
     singleOf(::PlatformDataStore) bind PlatformRepository::class
-
     singleOf(::PlatfromInteractor) bind PlatformUsecase::class
+
+    singleOf(::GamesDataStore) bind GamesRepository::class
+    singleOf(::GamesInteractor) bind GamesUsecase::class
 
     viewModelOf(::GenreViewModel)
     viewModelOf(::HomeViewModel)

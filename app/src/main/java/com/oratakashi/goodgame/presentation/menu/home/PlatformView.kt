@@ -22,7 +22,6 @@ import com.oratakashi.goodgame.presentation.theme.GoodGameTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlatformView(
-    navController: NavController,
     platforms: Platforms
 ) {
     Card(
@@ -46,9 +45,7 @@ fun PlatformView(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlatformSeeAllView(
-    navController: NavController
-) {
+fun PlatformSeeAllView() {
     Card(
         modifier = Modifier
             .padding(end = 8.dp)
@@ -68,20 +65,18 @@ fun PlatformSeeAllView(
 
 @Preview
 @Composable
-fun PlatformSeeAllView() {
+fun PreviewPlatformSeeAll() {
     GoodGameTheme {
         val navController = rememberNavController()
-        PlatformSeeAllView(navController)
+        PlatformSeeAllView()
     }
 }
 
 @Preview
 @Composable
-fun PreviewPlatformView() {
+fun PreviewPlatform() {
     GoodGameTheme {
-        val navController = rememberNavController()
         PlatformView(
-            navController,
             Platforms(
                 "PC",
                 1

@@ -1,4 +1,4 @@
-package com.oratakashi.goodgame.component
+package com.oratakashi.goodgame.presentation.component
 
 import androidx.annotation.RawRes
 import androidx.compose.runtime.Composable

@@ -25,4 +25,12 @@ interface RawgApiClient {
         @Query("page") page: Int = 1,
         @Query("page_size") pageSize: Int = 10,
     ): ResponseData<List<PlatformsItem>>
+
+    @GET("games")
+    suspend fun getGamesRelevance(
+        @Query("ordering") ordering: String = "-relevance",
+        @Query("date") date: String = "2023-10-01,2024-10-31",
+        @Query("page") page: Int = 1,
+        @Query("page_size") pageSize: Int = 5,
+    ): ResponseData<List<GamesItem>>
 }

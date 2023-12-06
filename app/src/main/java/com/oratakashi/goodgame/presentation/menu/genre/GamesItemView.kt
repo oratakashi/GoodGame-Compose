@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -93,7 +94,7 @@ fun PreviewGamesItemView() {
         GamesItemView(
             games = Games(
                 "https://media.rawg.io/media/screenshots/6e1/6e13d9acb4e7a6e184f24892f52c4544.jpg",
-                "The Witcher 3: Game of the Year",
+                "The Witcher 3",
                 1,
                 "2016-08-30"
             ), navController = navController

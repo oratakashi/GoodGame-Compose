@@ -128,8 +128,8 @@ dependencies {
     implementation 'com.valentinilk.shimmer:compose-shimmer:1.0.2'
 
     //Image Loader
-    implementation("io.coil-kt:coil:2.0.0-rc03")
-    implementation("io.coil-kt:coil-compose:2.0.0-rc03")
+    implementation("io.coil-kt:coil:2.5.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
     //Paging
     implementation 'androidx.paging:paging-compose:3.2.1'

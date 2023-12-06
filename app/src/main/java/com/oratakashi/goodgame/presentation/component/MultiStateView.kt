@@ -1,4 +1,4 @@
-package com.oratakashi.goodgame.component
+package com.oratakashi.goodgame.presentation.component
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
