@@ -2,11 +2,14 @@ package com.oratakashi.goodgame.presentation.menu.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.oratakashi.goodgame.domain.GamesUsecase
 import com.oratakashi.goodgame.domain.PlatformUsecase
 import com.oratakashi.goodgame.domain.model.games.Games
 import com.oratakashi.goodgame.domain.model.platforms.Platforms
 import com.oratakashi.viewbinding.core.tools.State
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -27,6 +30,11 @@ class HomeViewModel(
         MutableStateFlow(State.default())
     }
     val banner: StateFlow<State<List<Games>>> = _banner
+
+    val recommendation: Flow<PagingData<Games>> by lazy {
+        games.getGamesRecommendation()
+            .cachedIn(viewModelScope)
+    }
 
     private fun getPlatform() {
         platform.getPlatform()

@@ -1,16 +1,18 @@
 package com.oratakashi.goodgame.presentation.menu.home
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -23,6 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -34,18 +39,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.oratakashi.goodgame.R
-import com.oratakashi.goodgame.domain.model.games.Games
 import com.oratakashi.goodgame.domain.model.menu.Exploration
 import com.oratakashi.goodgame.presentation.component.CarouselLoadingView
 import com.oratakashi.goodgame.presentation.component.CarouselView
 import com.oratakashi.goodgame.presentation.component.ExploreView
+import com.oratakashi.goodgame.presentation.component.GamesItemView
 import com.oratakashi.goodgame.presentation.component.LottieView
 import com.oratakashi.goodgame.presentation.component.MultiStateView
 import com.oratakashi.goodgame.presentation.menu.destinations.GenreScreenDestination
 import com.oratakashi.goodgame.presentation.navigation.MainNavGraph
 import com.oratakashi.goodgame.presentation.theme.GoodGameTheme
 import com.oratakashi.goodgame.presentation.theme.SFPro
+import com.oratakashi.goodgame.utilty.hasItems
+import com.oratakashi.goodgame.utilty.isError
+import com.oratakashi.goodgame.utilty.isRefreshing
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.koinViewModel
@@ -96,150 +106,216 @@ fun HomeScreen(
             )
         },
         content = { innerPadding ->
-            Column(
+
+            val recommendation = viewModel.recommendation.collectAsLazyPagingItems()
+
+            val isLoading by remember(recommendation) {
+                derivedStateOf {
+                    recommendation.isRefreshing()
+                }
+            }
+
+            val isHasItems by remember(recommendation) {
+                derivedStateOf {
+                    recommendation.hasItems()
+                }
+            }
+
+            val isError by remember(recommendation) {
+                derivedStateOf {
+                    recommendation.isError()
+                }
+            }
+
+            LazyVerticalStaggeredGrid(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .wrapContentSize(align = Alignment.TopStart)
-                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 7.5.dp),
+                state = rememberLazyStaggeredGridState(),
+                columns = StaggeredGridCells.Adaptive(180.dp),
+                verticalItemSpacing = 7.5.dp,
+                horizontalArrangement = Arrangement.spacedBy(7.5.dp),
             ) {
-                MultiStateView(
-                    state = viewModel.banner,
-                    loadingLayout = {
-                        CarouselLoadingView()
-                    },
-                    emptyLayout = {
-                        LottieView(
+                item("carousel", span = StaggeredGridItemSpan.FullLine) {
+                    MultiStateView(
+                        modifier = Modifier.fillMaxWidth(),
+                        state = viewModel.banner,
+                        loadingLayout = {
+                            CarouselLoadingView()
+                        },
+                        emptyLayout = {
+                            LottieView(
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .height(150.dp)
+                                    .align(Alignment.Center),
+                                animation = R.raw.empty
+                            )
+                        },
+                        errorLayout = { _, _ ->
+                            LottieView(
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .height(150.dp)
+                                    .align(Alignment.Center),
+                                animation = R.raw.error
+                            )
+                        }
+                    ) {
+                        CarouselView(
+                            data = it,
                             modifier = Modifier
-                                .width(150.dp)
-                                .height(150.dp)
-                                .align(Alignment.Center),
-                            animation = R.raw.empty
-                        )
-                    },
-                    errorLayout = { _, _ ->
-                        LottieView(
-                            modifier = Modifier
-                                .width(150.dp)
-                                .height(150.dp)
-                                .align(Alignment.Center),
-                            animation = R.raw.error
+                                .fillMaxWidth()
+                                .padding(
+                                    top = 16.dp,
+                                )
                         )
                     }
-                ) {
-                    CarouselView(
-                        data = it,
+                }
+
+                item("label_explore", span = StaggeredGridItemSpan.FullLine) {
+                    Text(
+                        text = stringResource(R.string.label_explore),
+                        style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                top = 16.dp,
-                            )
+                            .padding(horizontal = 7.5.dp)
+                            .padding(top = 7.5.dp)
                     )
                 }
-                val data = listOf(
-                    Games(
-                        "https://media.rawg.io/media/screenshots/6e1/6e13d9acb4e7a6e184f24892f52c4544.jpg",
-                        "The Witcher 2",
-                        1,
-                        "2016-08-30"
-                    ),
-                    Games(
-                        "https://media.rawg.io/media/screenshots/6e1/6e13d9acb4e7a6e184f24892f52c4544.jpg",
-                        "The Witcher 3",
-                        2,
-                        "2016-08-30"
-                    ),
-                    Games(
-                        "https://media.rawg.io/media/screenshots/6e1/6e13d9acb4e7a6e184f24892f52c4544.jpg",
-                        "The Witcher 4",
-                        3,
-                        "2016-08-30"
-                    )
-                )
-//                CarouselLoadingView()
-                Text(
-                    text = stringResource(R.string.label_explore),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 16.dp)
-                )
 
-                ExploreView(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    when (it) {
-                        Exploration.NewRelease -> {
+                item("explore", span = StaggeredGridItemSpan.FullLine) {
+                    ExploreView(
+                        modifier = Modifier
+                            .padding(top = 7.5.dp)
+                            .fillMaxWidth()
+                    ) {
+                        when (it) {
+                            Exploration.NewRelease -> {
 
-                        }
+                            }
 
-                        Exploration.TopRating -> {
+                            Exploration.TopRating -> {
 
-                        }
+                            }
 
-                        Exploration.Genre -> {
-                            navController.navigate(GenreScreenDestination)
-                        }
+                            Exploration.Genre -> {
+                                navController.navigate(GenreScreenDestination)
+                            }
 
-                        Exploration.Publisher -> {
+                            Exploration.Publisher -> {
 
+                            }
                         }
                     }
                 }
 
-                Text(
-                    text = "Browse by Platforms",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 7.5.dp)
-                )
+                item("label_platform", span = StaggeredGridItemSpan.FullLine) {
+                    Text(
+                        text = "Browse by Platforms",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 7.5.dp)
+                            .padding(top = 7.5.dp)
+                    )
+                }
+
+                item("platform", span = StaggeredGridItemSpan.FullLine) {
+                    MultiStateView(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        state = viewModel.platforms,
+                        loadingLayout = {
+                            LottieView(
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .height(150.dp)
+                                    .align(Alignment.Center),
+                                animation = R.raw.loading
+                            )
+                        },
+                        emptyLayout = {
+                            LottieView(
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .height(150.dp)
+                                    .align(Alignment.Center),
+                                animation = R.raw.empty
+                            )
+                        },
+                        errorLayout = { _, _ ->
+                            LottieView(
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .height(150.dp)
+                                    .align(Alignment.Center),
+                                animation = R.raw.error
+                            )
+                        }
+                    ) { data ->
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = 7.5.dp)
+                        ) {
+                            items(data.size) { position ->
+                                PlatformView(
+                                    platforms = data[position]
+                                )
+                            }
+                            item {
+                                PlatformSeeAllView()
+                            }
+                        }
+                    }
+                }
+
+                item("label_recommendation", span = StaggeredGridItemSpan.FullLine) {
+                    Text(
+                        text = "Recommendation",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 7.5.dp)
+                            .padding(top = 7.5.dp)
+                    )
+                }
 
                 MultiStateView(
-                    modifier = Modifier
-                        .padding(top = 7.5.dp),
-                    state = viewModel.platforms,
+                    state = recommendation,
                     loadingLayout = {
-                        LottieView(
-                            modifier = Modifier
-                                .width(150.dp)
-                                .height(150.dp)
-                                .align(Alignment.Center),
-                            animation = R.raw.loading
-                        )
-                    },
-                    emptyLayout = {
-                        LottieView(
-                            modifier = Modifier
-                                .width(150.dp)
-                                .height(150.dp)
-                                .align(Alignment.Center),
-                            animation = R.raw.empty
-                        )
-                    },
-                    errorLayout = { _, _ ->
-                        LottieView(
-                            modifier = Modifier
-                                .width(150.dp)
-                                .height(150.dp)
-                                .align(Alignment.Center),
-                            animation = R.raw.error
-                        )
-                    }
-                ) { data ->
-                    LazyRow(
-                        contentPadding = PaddingValues(horizontal = 16.dp)
-                    ) {
-                        items(data.size) { position ->
-                            PlatformView(
-                                platforms = data[position]
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            LottieView(
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .height(150.dp)
+                                    .align(Alignment.Center),
+                                animation = R.raw.loading
                             )
                         }
-                        item {
-                            PlatformSeeAllView()
+                    },
+                    errorLayout = { _, _ ->
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            LottieView(
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .height(150.dp)
+                                    .align(Alignment.Center),
+                                animation = R.raw.error
+                            )
                         }
+                    }
+                ) {
+                    it?.let { games ->
+                        GamesItemView(
+                            modifier = Modifier
+                                .padding(horizontal = 7.5.dp, vertical = 7.5.dp),
+                            games = games,
+                            navController = navController
+                        )
                     }
                 }
             }

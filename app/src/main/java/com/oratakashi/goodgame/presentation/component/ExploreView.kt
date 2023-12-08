@@ -35,19 +35,18 @@ fun ExploreView(
     ) {
         Row(
             modifier = Modifier
-                .padding(top = 7.5.dp)
         ) {
             ExploreItemView(
                 data = painterResource(id = R.drawable.ic_new) to stringResource(R.string.label_new_release),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 7.5.dp, end = 1.0.dp)
+                    .padding(start = 0.dp, end = 1.0.dp)
             )
             ExploreItemView(
                 data = painterResource(id = R.drawable.ic_top) to stringResource(R.string.label_top_rating),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 1.0.dp, end = 7.5.dp)
+                    .padding(start = 1.0.dp, end = 0.dp)
             )
         }
 
@@ -59,7 +58,7 @@ fun ExploreView(
                 data = painterResource(id = R.drawable.ic_genre) to stringResource(R.string.label_genre),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 7.5.dp, end = 1.dp)
+                    .padding(start = 0.dp, end = 1.dp)
                     .clickable {
                         onClick.invoke(Exploration.Genre)
                     }
@@ -68,7 +67,7 @@ fun ExploreView(
                 data = painterResource(id = R.drawable.ic_platform) to stringResource(R.string.label_publisher),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 1.dp, end = 7.5.dp)
+                    .padding(start = 1.dp, end = 0.dp)
             )
         }
     }

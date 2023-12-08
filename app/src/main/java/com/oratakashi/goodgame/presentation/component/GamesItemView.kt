@@ -1,4 +1,4 @@
-package com.oratakashi.goodgame.presentation.menu.genre
+package com.oratakashi.goodgame.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -32,11 +31,11 @@ import com.oratakashi.goodgame.utilty.addEmptyLines
 @Composable
 fun GamesItemView(
     games: Games,
-    navController: NavController
+    navController: NavController,
+    modifier: Modifier = Modifier
 ) {
     ConstraintLayout(
-        modifier = Modifier
-            .padding(end = 10.dp)
+        modifier = modifier
             .width(120.dp)
             .height(180.dp)
             .clip(RoundedCornerShape(8.dp))

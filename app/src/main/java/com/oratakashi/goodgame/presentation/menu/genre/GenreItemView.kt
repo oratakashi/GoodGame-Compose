@@ -1,7 +1,6 @@
 package com.oratakashi.goodgame.presentation.menu.genre
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -35,9 +33,10 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.oratakashi.goodgame.R
+import com.oratakashi.goodgame.domain.model.genre.Genre
+import com.oratakashi.goodgame.presentation.component.GamesItemView
 import com.oratakashi.goodgame.presentation.component.LottieView
 import com.oratakashi.goodgame.presentation.component.MultiStateView
-import com.oratakashi.goodgame.domain.model.genre.Genre
 import com.oratakashi.goodgame.presentation.theme.GoodGameTheme
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.flow.asStateFlow
@@ -147,7 +146,8 @@ fun GenreItemView(
                             items(data.size) { position ->
                                 GamesItemView(
                                     games = data[position],
-                                    navController = navController
+                                    navController = navController,
+                                    modifier = Modifier.padding(end = 10.dp)
                                 )
                             }
                         }
