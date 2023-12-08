@@ -109,24 +109,6 @@ fun HomeScreen(
 
             val recommendation = viewModel.recommendation.collectAsLazyPagingItems()
 
-            val isLoading by remember(recommendation) {
-                derivedStateOf {
-                    recommendation.isRefreshing()
-                }
-            }
-
-            val isHasItems by remember(recommendation) {
-                derivedStateOf {
-                    recommendation.hasItems()
-                }
-            }
-
-            val isError by remember(recommendation) {
-                derivedStateOf {
-                    recommendation.isError()
-                }
-            }
-
             LazyVerticalStaggeredGrid(
                 modifier = Modifier
                     .padding(innerPadding)
